@@ -4,3 +4,8 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+capnp = "0.21.0"
+wee_alloc = "0.4.5"
+
+[build-dependencies]
+capnpc = "0.21.0"

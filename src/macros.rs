@@ -45,3 +45,27 @@ macro_rules! read_chunk_result {
         Ok(chunks)
     }};
 }
+
+#[macro_export]
+macro_rules! capnp_message_to_type {
+    ($ptr:expr, $size:expr, $reader_type:ty, $rust_type:ty) => {{
+        use capnp::{message::ReaderOptions, serialize};
+
+        // Get pointer and size first, then enter unsafe context
+        let ptr = $ptr as *const u8;
+        let size = $size as usize;
+
+        // SAFETY: Caller must ensure ptr and len are valid
+        let slice = unsafe { core::slice::from_raw_parts(ptr, size) };
+        let mut cursor = std::io::Cursor::new(slice);
+
+        let message = serialize::read_message(&mut cursor, ReaderOptions::new())
+            .map_err($crate::error::Error::Capnp)?;
+
+        let root = message
+            .get_root::<$reader_type>()
+            .map_err($crate::error::Error::Capnp)?;
+
+        Ok(<$rust_type>::from(root))
+    }};
+}

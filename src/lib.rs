@@ -34,3 +34,7 @@ pub fn chunk_by_sentence(s: &str) -> Result<Vec<String>, Error> {
 
     read_chunk_result!(out_ptr, out_size)
 }
+
+// pub fn on_create(ptr: u32, len: u32) {
+//     let entry = capnp_message_to_type!(ptr, len, entry_capnp::entry::Reader, types::entry::Entry);
+// }

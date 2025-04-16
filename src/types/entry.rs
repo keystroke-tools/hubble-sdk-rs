@@ -55,6 +55,7 @@ pub struct Queue {
     pub queued_at: i64,
 }
 
+#[derive(Default)]
 pub struct Entry {
     pub id: String,
     pub name: String,
@@ -173,5 +174,12 @@ impl From<entry_capnp::entry::Reader<'_>> for Entry {
             filesize_bytes: value.get_filesize_bytes(),
             url,
         }
+    }
+}
+
+impl Entry {
+    pub fn read_from_capnp(ptr: u32, len: u32) -> Result<Self, crate::error::Error> {
+        let entry = crate::capnp_message_to_type!(ptr, len, entry_capnp::entry::Reader, Entry)?;
+        Ok(entry)
     }
 }

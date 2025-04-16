@@ -13,10 +13,7 @@ pub extern "C" fn allocate(size: u32) -> u32 {
         panic!("Failed to allocate memory");
     }
 
-    // Leak the pointer to prevent deallocation
-    let leaked_ptr = ptr as u32;
-    std::mem::forget(ptr);
-    leaked_ptr
+    ptr as u32
 }
 
 // Deallocates the memory at the given pointer and size.

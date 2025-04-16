@@ -66,6 +66,11 @@ macro_rules! capnp_message_to_type {
             .get_root::<$reader_type>()
             .map_err($crate::error::Error::Capnp)?;
 
-        Ok(<$rust_type>::from(root))
+        let result = <$rust_type>::from(root);
+
+        // Dealloc the memory
+        $crate::allocator::deallocate($ptr, $size);
+
+        Ok(result)
     }};
 }

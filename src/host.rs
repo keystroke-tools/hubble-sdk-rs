@@ -11,4 +11,7 @@ unsafe extern "C" {
 
     #[link_name = "chunk_by_sentence"]
     pub(crate) fn chunk_by_sentence(ptr: u32, size: u32) -> u64;
+
+    #[link_name = "request"]
+    pub(crate) fn network_request(ptr: u32, size: u32) -> u64;
 }

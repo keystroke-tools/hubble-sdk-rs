@@ -13,7 +13,10 @@ pub extern "C" fn allocate(size: u32) -> u32 {
         panic!("Failed to allocate memory");
     }
 
-    ptr as u32
+    // Leak the pointer to prevent deallocation
+    let leaked_ptr = ptr as u32;
+    std::mem::forget(ptr);
+    leaked_ptr
 }
 
 // Deallocates the memory at the given pointer and size.
@@ -39,6 +42,7 @@ pub unsafe fn ptr_to_string(ptr: u32, len: u32) -> String {
     let utf8 = unsafe { std::str::from_utf8_unchecked_mut(slice) };
     utf8.to_owned()
 }
+
 /// Returns a pointer and size pair for the given string.
 ///
 /// ## Safety
@@ -46,6 +50,13 @@ pub unsafe fn ptr_to_string(ptr: u32, len: u32) -> String {
 /// internal buffer, which may not be valid if the string is dropped or
 pub unsafe fn string_to_ptr(s: &str) -> (u32, u32) {
     (s.as_ptr() as u32, s.len() as u32)
+}
+
+/// Writes a buffer to memory at the given pointer.
+pub fn write_to_memory(ptr: u32, data: &[u8]) {
+    unsafe {
+        std::ptr::copy_nonoverlapping(data.as_ptr(), ptr as *mut u8, data.len());
+    }
 }
 
 /// Reads a pointer and length from an encoded u64 value.

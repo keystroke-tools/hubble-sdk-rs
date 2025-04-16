@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 capnp = "0.21.0"
+thiserror = "2.0.12"
 
 [build-dependencies]
 capnpc = "0.21.0"

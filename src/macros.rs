@@ -9,11 +9,22 @@ macro_rules! capnp_str {
 }
 
 #[macro_export]
+macro_rules! capnp_get_text {
+    ($fn:expr) => {
+        $fn.ok()
+            .and_then(|s| s.to_str().ok())
+            .unwrap_or_default()
+            .to_string()
+    };
+}
+
+#[macro_export]
 macro_rules! read_chunk_result {
     ($ptr:expr, $size:expr) => {{
         use $crate::error::Error;
 
-        let slice = unsafe { core::slice::from_raw_parts($ptr as *const u8, $size as usize) };
+        let (ptr, size) = ($ptr as *const u8, $size as usize);
+        let slice = unsafe { core::slice::from_raw_parts(ptr, size) };
         let mut cursor = std::io::Cursor::new(slice);
         let message =
             capnp::serialize::read_message(&mut cursor, capnp::message::ReaderOptions::new())

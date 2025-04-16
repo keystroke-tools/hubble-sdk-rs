@@ -3,6 +3,7 @@ pub mod error;
 pub(crate) mod host;
 pub mod log;
 pub mod macros;
+pub mod types;
 
 use crate::error::Error;
 

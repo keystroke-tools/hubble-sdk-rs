@@ -18,3 +18,28 @@ pub mod store_capnp {
 pub mod network_capnp {
     include!(concat!(env!("OUT_DIR"), "/network_capnp.rs"));
 }
+
+pub fn generate_checksum(data: &[u8]) -> String {
+    use sha2::{Digest, Sha256};
+
+    let mut hasher = Sha256::new();
+    hasher.update(data);
+    let result = hasher.finalize();
+
+    format!("{:x}", result)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_generate_checksum() {
+        let data = b"Hello, world!";
+        let checksum = generate_checksum(data);
+        assert_eq!(
+            checksum,
+            "315f5bdb76d078c43b8ac0064e4a0164612b1fce77c869345bfc94c75894edd3"
+        );
+    }
+}

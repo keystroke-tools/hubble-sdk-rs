@@ -20,4 +20,6 @@ unsafe extern "C" {
 
     #[link_name = "transform_html_to_markdown"]
     pub(crate) fn transform_html_to_markdown(ptr: u32, size: u32) -> u64;
+
+    pub(crate) fn update_entry(ptr: u32, size: u32) -> u64;
 }

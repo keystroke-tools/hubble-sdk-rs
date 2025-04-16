@@ -28,4 +28,7 @@ pub enum Error {
 
     #[error("Failed to allocate memory")]
     MemoryAllocationFailed,
+
+    #[error("Invalid arguments provided: {0}")]
+    InvalidArguments(String),
 }

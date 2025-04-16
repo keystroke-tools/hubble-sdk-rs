@@ -1,7 +1,7 @@
 use capnp::message::Builder;
 use std::collections::HashMap;
 
-use crate::{capnp_get_text, network_capnp};
+use crate::{capnp_get_text, error, network_capnp};
 
 #[derive(Debug, Clone, Copy, Default)]
 pub enum NetworkMethod {
@@ -26,7 +26,7 @@ pub struct NetworkResponse {
 }
 
 impl RequestOpts {
-    pub fn to_capnp(&self) -> Result<Vec<u8>, capnp::Error> {
+    pub fn to_capnp_message(&self) -> Result<Vec<u8>, error::Error> {
         let mut message = Builder::new_default();
         let mut request = message.init_root::<network_capnp::network_request::Builder>();
 
@@ -52,7 +52,7 @@ impl RequestOpts {
 
         let mut buffer = vec![];
         let mut cursor = std::io::Cursor::new(&mut buffer);
-        capnp::serialize::write_message(&mut cursor, &message)?;
+        capnp::serialize::write_message(&mut cursor, &message).map_err(error::Error::Capnp)?;
 
         Ok(buffer)
     }

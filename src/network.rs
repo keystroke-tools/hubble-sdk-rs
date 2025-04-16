@@ -4,11 +4,10 @@ use crate::{allocator, host};
 
 /// Sends a network request to the specified URL with the given method and body.
 pub fn request(opts: types::RequestOpts) -> Result<types::NetworkResponse, Error> {
-    let message = opts.to_capnp().map_err(Error::Capnp)?;
+    let message = opts.to_capnp_message()?;
 
     let len = message.len() as u32;
     let ptr = allocator::allocate(len);
-
     if ptr == 0 {
         return Err(Error::MemoryAllocationFailed);
     }

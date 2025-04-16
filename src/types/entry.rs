@@ -1,5 +1,7 @@
 use crate::capnp_get_text;
 use crate::entry_capnp;
+use crate::error;
+use capnp::message::Builder;
 
 #[derive(Default)]
 pub enum Type {
@@ -181,5 +183,39 @@ impl Entry {
     pub fn read_from_memory(ptr: u32, len: u32) -> Result<Self, crate::error::Error> {
         let entry = crate::capnp_message_to_type!(ptr, len, entry_capnp::entry::Reader, Entry)?;
         Ok(entry)
+    }
+}
+
+pub struct UpdateEntryOpts {
+    pub id: String,
+    pub name: Option<String>,
+    pub content: Option<String>,
+    pub checksum: Option<String>,
+}
+
+impl UpdateEntryOpts {
+    pub fn to_capnp_message(&self) -> Result<Vec<u8>, error::Error> {
+        let mut message = Builder::new_default();
+        let mut entry = message.init_root::<entry_capnp::update_entry_request::Builder>();
+
+        entry.set_id(&self.id);
+
+        if let Some(name) = &self.name {
+            entry.set_name(name);
+        }
+
+        if let Some(content) = &self.content {
+            entry.set_content(content);
+        }
+
+        if let Some(checksum) = &self.checksum {
+            entry.set_checksum(checksum);
+        }
+
+        let mut buffer = vec![];
+        let mut cursor = std::io::Cursor::new(&mut buffer);
+        capnp::serialize::write_message(&mut cursor, &message).map_err(error::Error::Capnp)?;
+
+        Ok(buffer)
     }
 }

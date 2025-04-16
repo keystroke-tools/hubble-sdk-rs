@@ -21,20 +21,22 @@ macro_rules! capnp_get_text {
 #[macro_export]
 macro_rules! read_chunk_result {
     ($ptr:expr, $size:expr) => {{
-        use $crate::error::Error;
+        use $crate::capnp_str;
+        use $crate::entry_capnp;
+        use $crate::error;
 
         let (ptr, size) = ($ptr as *const u8, $size as usize);
         let slice = unsafe { core::slice::from_raw_parts(ptr, size) };
         let mut cursor = std::io::Cursor::new(slice);
         let message =
             capnp::serialize::read_message(&mut cursor, capnp::message::ReaderOptions::new())
-                .map_err(Error::Capnp)?;
+                .map_err(error::Error::Capnp)?;
 
         let chunk_result = message
             .get_root::<entry_capnp::chunk_result::Reader>()
-            .map_err(Error::Capnp)?;
+            .map_err(error::Error::Capnp)?;
 
-        let chunks_reader = chunk_result.get_chunks().map_err(Error::Capnp)?;
+        let chunks_reader = chunk_result.get_chunks().map_err(error::Error::Capnp)?;
 
         let mut chunks = Vec::new();
         for i in 0..chunks_reader.len() {

@@ -14,4 +14,10 @@ unsafe extern "C" {
 
     #[link_name = "request"]
     pub(crate) fn network_request(ptr: u32, size: u32) -> u64;
+
+    #[link_name = "transform_url_to_markdown"]
+    pub(crate) fn transform_url_to_markdown(ptr: u32, size: u32) -> u64;
+
+    #[link_name = "transform_html_to_markdown"]
+    pub(crate) fn transform_html_to_markdown(ptr: u32, size: u32) -> u64;
 }

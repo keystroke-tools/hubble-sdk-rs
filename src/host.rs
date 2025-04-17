@@ -1,10 +1,13 @@
 #[link(wasm_import_module = "env")]
 unsafe extern "C" {
-    #[link_name = "debug"]
+    #[link_name = "log_debug"]
     pub(crate) fn debug(ptr: u32, size: u32) -> u64;
 
-    #[link_name = "error"]
+    #[link_name = "log_error"]
     pub(crate) fn error(ptr: u32, size: u32) -> u64;
+
+    #[link_name = "log_warn"]
+    pub(crate) fn warn(ptr: u32, size: u32) -> u64;
 
     #[link_name = "chunk_with_overlap"]
     pub(crate) fn chunk_with_overlap(ptr: u32, size: u32) -> u64;
@@ -12,7 +15,7 @@ unsafe extern "C" {
     #[link_name = "chunk_by_sentence"]
     pub(crate) fn chunk_by_sentence(ptr: u32, size: u32) -> u64;
 
-    #[link_name = "request"]
+    #[link_name = "network_request"]
     pub(crate) fn network_request(ptr: u32, size: u32) -> u64;
 
     #[link_name = "transform_url_to_markdown"]
@@ -21,9 +24,9 @@ unsafe extern "C" {
     #[link_name = "transform_html_to_markdown"]
     pub(crate) fn transform_html_to_markdown(ptr: u32, size: u32) -> u64;
 
-    #[link_name = "update_entry"]
-    pub(crate) fn update_entry(ptr: u32, size: u32) -> u64;
+    #[link_name = "entry_update"]
+    pub(crate) fn entry_update(ptr: u32, size: u32) -> u64;
 
-    #[link_name = "create_entry_chunks"]
-    pub(crate) fn create_entry_chunks(ptr: u32, size: u32) -> u64;
+    #[link_name = "entry_create_chunks"]
+    pub(crate) fn entry_create_chunks(ptr: u32, size: u32) -> u64;
 }

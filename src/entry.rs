@@ -24,7 +24,7 @@ pub fn update(opts: types::UpdateEntryOpts) -> Result<(), error::Error> {
     // Write message to shared memory
     allocator::write_to_memory(ptr, &message);
 
-    let _ = unsafe { host::update_entry(ptr, size) };
+    let _ = unsafe { host::entry_update(ptr, size) };
 
     Ok(())
 }
@@ -44,6 +44,6 @@ pub fn create_chunks(opts: types::CreateChunksOpts) -> Result<u64, error::Error>
     }
     allocator::write_to_memory(ptr, &message);
 
-    let count = unsafe { host::create_entry_chunks(ptr, size) };
+    let count = unsafe { host::entry_create_chunks(ptr, size) };
     Ok(count)
 }

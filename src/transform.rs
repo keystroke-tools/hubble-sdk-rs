@@ -28,7 +28,7 @@ pub fn url_to_markdown(url: &str) -> Result<String, Error> {
 
     let (out_ptr, out_size) = allocator::decode_encoded_ptr(result);
     if out_ptr == 0 || out_size == 0 {
-        return Err(Error::MemoryAllocationFailed {
+        return Err(Error::ReadMemoryError {
             context: "url_to_markdown".to_string(),
         });
     }

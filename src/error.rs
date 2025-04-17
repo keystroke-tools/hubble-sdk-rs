@@ -23,8 +23,8 @@ pub enum Error {
     #[error("A memory-related error occured: {0}")]
     MemoryError(String),
 
-    #[error("Failed to read memory")]
-    ReadMemoryError(String),
+    #[error("Failed to read memory in {context}")]
+    ReadMemoryError { context: String },
 
     #[error("Failed to allocate memory in {context}")]
     MemoryAllocationFailed { context: String },

@@ -6,7 +6,7 @@ pub fn chunk_with_overlap(s: &str) -> Result<Vec<String>, Error> {
     let (ptr, size) = unsafe { allocator::string_to_ptr(s) };
     let chunks = unsafe { host::chunk_with_overlap(ptr, size) };
 
-    let (out_ptr, out_size) = allocator::read_ptr_len(chunks);
+    let (out_ptr, out_size) = allocator::decode_encoded_ptr(chunks);
 
     read_chunk_result!(out_ptr, out_size)
 }
@@ -16,7 +16,7 @@ pub fn chunk_by_sentence(s: &str) -> Result<Vec<String>, Error> {
     let (ptr, size) = unsafe { allocator::string_to_ptr(s) };
     let chunks = unsafe { host::chunk_by_sentence(ptr, size) };
 
-    let (out_ptr, out_size) = allocator::read_ptr_len(chunks);
+    let (out_ptr, out_size) = allocator::decode_encoded_ptr(chunks);
 
     read_chunk_result!(out_ptr, out_size)
 }
@@ -26,7 +26,7 @@ pub fn url_to_markdown(url: &str) -> Result<String, Error> {
     let (ptr, size) = unsafe { allocator::string_to_ptr(url) };
     let result = unsafe { host::transform_url_to_markdown(ptr, size) };
 
-    let (out_ptr, out_size) = allocator::read_ptr_len(result);
+    let (out_ptr, out_size) = allocator::decode_encoded_ptr(result);
     if out_ptr == 0 || out_size == 0 {
         return Err(Error::MemoryAllocationFailed {
             context: "url_to_markdown".to_string(),
@@ -47,7 +47,7 @@ pub fn html_to_markdown(html: &str) -> Result<String, Error> {
     let (ptr, size) = unsafe { allocator::string_to_ptr(html) };
     let result = unsafe { host::transform_html_to_markdown(ptr, size) };
 
-    let (out_ptr, out_size) = allocator::read_ptr_len(result);
+    let (out_ptr, out_size) = allocator::decode_encoded_ptr(result);
     if out_ptr == 0 || out_size == 0 {
         return Err(Error::MemoryAllocationFailed {
             context: "html_to_markdown".to_string(),

@@ -58,10 +58,15 @@ pub fn write_to_memory(ptr: u32, data: &[u8]) {
 
 /// Reads a pointer and length from an encoded u64 value.
 /// Format: the upper 32 bits represent the pointer, and the lower 32 bits represent the length
-pub fn read_ptr_len(encoded: u64) -> (u32, u32) {
+pub fn decode_encoded_ptr(encoded: u64) -> (u32, u32) {
     let ptr = (encoded >> 32) as u32;
     let len = (encoded & 0xFFFFFFFF) as u32;
     (ptr, len)
+}
+
+/// Encodes a pointer and size into a u64 value.
+pub fn encode_ptr_with_size(ptr: u32, size: u32) -> u64 {
+    ((ptr as u64) << 32) | (size as u64)
 }
 
 #[cfg(test)]
@@ -73,7 +78,7 @@ mod tests {
         let ptr = 0xABCD1234;
         let len = 1024;
         let packed = ((ptr as u64) << 32) | (len as u64);
-        let (decoded_ptr, decoded_len) = read_ptr_len(packed);
+        let (decoded_ptr, decoded_len) = decode_encoded_ptr(packed);
         assert_eq!(ptr, decoded_ptr);
         assert_eq!(len, decoded_len);
     }

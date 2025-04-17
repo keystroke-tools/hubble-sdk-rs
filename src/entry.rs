@@ -16,7 +16,9 @@ pub fn update(opts: types::UpdateEntryOpts) -> Result<(), error::Error> {
     let size = message.len() as u32;
     let ptr = allocator::allocate(size);
     if ptr == 0 {
-        return Err(error::Error::MemoryAllocationFailed);
+        return Err(error::Error::MemoryAllocationFailed {
+            context: "update_chunk".to_string(),
+        });
     }
 
     // Write message to shared memory
@@ -36,7 +38,9 @@ pub fn create_chunks(opts: types::CreateChunksOpts) -> Result<u64, error::Error>
     let size = message.len() as u32;
     let ptr = allocator::allocate(size);
     if ptr == 0 {
-        return Err(Error::MemoryAllocationFailed);
+        return Err(Error::MemoryAllocationFailed {
+            context: "create_chunks".to_string(),
+        });
     }
     allocator::write_to_memory(ptr, &message);
 

@@ -26,8 +26,8 @@ pub enum Error {
     #[error("Failed to read memory")]
     ReadMemoryError(String),
 
-    #[error("Failed to allocate memory")]
-    MemoryAllocationFailed,
+    #[error("Failed to allocate memory in {context}")]
+    MemoryAllocationFailed { context: String },
 
     #[error("Invalid arguments provided: {0}")]
     InvalidArguments(String),

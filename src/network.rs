@@ -9,7 +9,9 @@ pub fn request(opts: types::RequestOpts) -> Result<types::NetworkResponse, Error
     let size = message.len() as u32;
     let ptr = allocator::allocate(size);
     if ptr == 0 {
-        return Err(Error::MemoryAllocationFailed);
+        return Err(Error::MemoryAllocationFailed {
+            context: "write_request_data".to_string(),
+        });
     }
 
     // Write the message to memory
@@ -18,7 +20,9 @@ pub fn request(opts: types::RequestOpts) -> Result<types::NetworkResponse, Error
     let encoded_ptr = unsafe { host::network_request(ptr, size) };
     let (out_ptr, out_size) = allocator::read_ptr_len(encoded_ptr);
     if out_ptr == 0 || out_size == 0 {
-        return Err(Error::MemoryAllocationFailed);
+        return Err(Error::MemoryAllocationFailed {
+            context: "read_request_data".to_string(),
+        });
     }
 
     // Read the response from memory

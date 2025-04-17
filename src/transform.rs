@@ -28,7 +28,9 @@ pub fn url_to_markdown(url: &str) -> Result<String, Error> {
 
     let (out_ptr, out_size) = allocator::read_ptr_len(result);
     if out_ptr == 0 || out_size == 0 {
-        return Err(Error::MemoryAllocationFailed);
+        return Err(Error::MemoryAllocationFailed {
+            context: "url_to_markdown".to_string(),
+        });
     }
 
     let output = unsafe { allocator::ptr_to_string(out_ptr, out_size) };
@@ -47,7 +49,9 @@ pub fn html_to_markdown(html: &str) -> Result<String, Error> {
 
     let (out_ptr, out_size) = allocator::read_ptr_len(result);
     if out_ptr == 0 || out_size == 0 {
-        return Err(Error::MemoryAllocationFailed);
+        return Err(Error::MemoryAllocationFailed {
+            context: "html_to_markdown".to_string(),
+        });
     }
 
     let output = unsafe { allocator::ptr_to_string(out_ptr, out_size) };

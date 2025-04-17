@@ -1,5 +1,5 @@
 use crate::{
-    allocator, entry_capnp,
+    allocator,
     error::{self, Error},
     host, types,
 };

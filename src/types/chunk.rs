@@ -22,10 +22,6 @@ pub struct CreateChunksOpts {
     pub chunks: Vec<NewChunk>,
 }
 
-pub(crate) struct CreateChunksResult {
-    pub count: i32,
-}
-
 impl From<entry_capnp::entry_chunk::Reader<'_>> for EntryChunk {
     fn from(value: entry_capnp::entry_chunk::Reader<'_>) -> Self {
         let entry_id = capnp_get_text!(value.get_entry_id());

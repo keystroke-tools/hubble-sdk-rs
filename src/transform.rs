@@ -33,7 +33,7 @@ pub fn url_to_markdown(url: &str) -> Result<String, Error> {
 
     let output = unsafe { allocator::ptr_to_string(out_ptr, out_size) };
     if output.is_empty() {
-        return Err(Error::EmptyStringError);
+        return Err(Error::EmptyString);
     }
 
     Ok(output)
@@ -52,7 +52,7 @@ pub fn html_to_markdown(html: &str) -> Result<String, Error> {
 
     let output = unsafe { allocator::ptr_to_string(out_ptr, out_size) };
     if output.is_empty() {
-        return Err(Error::EmptyStringError);
+        return Err(Error::EmptyString);
     }
 
     Ok(output)

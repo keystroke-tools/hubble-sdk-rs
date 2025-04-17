@@ -30,9 +30,7 @@ pub fn update(opts: types::UpdateEntryOpts) -> Result<(), error::Error> {
 /// Create chunks for an entry
 ///
 /// Entry chunks are blocks/fragments of the document independently indexed and retrievable.
-pub fn create_chunks(
-    opts: types::CreateChunksOpts,
-) -> Result<Vec<types::EntryChunk>, error::Error> {
+pub fn create_chunks(opts: types::CreateChunksOpts) -> Result<i64, error::Error> {
     let message = opts.to_capnp_message()?;
 
     let size = message.len() as u32;
@@ -48,12 +46,12 @@ pub fn create_chunks(
         return Err(Error::MemoryAllocationFailed);
     }
 
-    let response = crate::capnp_message_to_type!(
-        out_ptr,
-        out_size,
-        entry_capnp::create_chunks_response::Reader,
-        types::CreateChunksResult
-    )?;
+    let result = unsafe { allocator::ptr_to_string(out_ptr, out_size) };
+    if result.is_empty() {
+        return Err(Error::EmptyString);
+    }
 
-    Ok(response.chunks)
+    result.parse::<i64>().map_err(|_| {
+        error::Error::InvalidArguments("Failed to parse chunk count from response".to_string())
+    })
 }

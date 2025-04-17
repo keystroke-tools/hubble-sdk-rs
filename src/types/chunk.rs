@@ -23,7 +23,7 @@ pub struct CreateChunksOpts {
 }
 
 pub(crate) struct CreateChunksResult {
-    pub chunks: Vec<EntryChunk>,
+    pub count: i32,
 }
 
 impl From<entry_capnp::entry_chunk::Reader<'_>> for EntryChunk {
@@ -84,24 +84,5 @@ impl CreateChunksOpts {
         capnp::serialize::write_message(&mut cursor, &message).map_err(error::Error::Capnp)?;
 
         Ok(buffer)
-    }
-}
-
-impl From<entry_capnp::create_chunks_response::Reader<'_>> for CreateChunksResult {
-    fn from(value: entry_capnp::create_chunks_response::Reader<'_>) -> Self {
-        if !value.has_chunks() {
-            return CreateChunksResult { chunks: vec![] };
-        }
-
-        let chunks_reader = value.get_chunks().unwrap();
-        let mut chunks = Vec::new();
-
-        for i in 0..chunks_reader.len() {
-            let chunk = chunks_reader.get(i);
-            let entry_chunk = EntryChunk::from(chunk);
-            chunks.push(entry_chunk);
-        }
-
-        CreateChunksResult { chunks }
     }
 }

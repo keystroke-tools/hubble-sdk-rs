@@ -18,7 +18,7 @@ pub enum Error {
     ReadStringError { reason: String },
 
     #[error("No valid UTF-8 string found in memory")]
-    EmptyStringError,
+    EmptyString,
 
     #[error("A memory-related error occured: {0}")]
     MemoryError(String),

@@ -44,6 +44,9 @@ macro_rules! read_chunk_result {
             chunks.push(chunk.to_string());
         }
 
+        // Dealloc the memory
+        $crate::allocator::deallocate($ptr, $size);
+
         Ok(chunks)
     }};
 }

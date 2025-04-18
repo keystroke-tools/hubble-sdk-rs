@@ -31,4 +31,19 @@ pub enum Error {
 
     #[error("Invalid arguments provided: {0}")]
     InvalidArguments(String),
+
+    #[error("{0}")]
+    StoreError(StoreError),
+}
+
+#[derive(Debug, Error)]
+pub enum StoreError {
+    #[error("Key not found in store: {key}")]
+    KeyNotFound { key: String },
+
+    #[error("Host returned an unexpected result")]
+    UnexpectedResult,
+
+    #[error("Failed to delete key: {key}, reason: {reason}")]
+    FailedDelete { key: String, reason: String },
 }

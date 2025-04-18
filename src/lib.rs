@@ -5,6 +5,7 @@ pub(crate) mod host;
 pub mod log;
 pub mod macros;
 pub mod network;
+pub mod store;
 pub mod transform;
 pub mod types;
 

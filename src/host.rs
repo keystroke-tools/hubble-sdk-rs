@@ -29,4 +29,20 @@ unsafe extern "C" {
 
     #[link_name = "entry_create_chunks"]
     pub(crate) fn entry_create_chunks(ptr: u32, size: u32) -> u64;
+
+    // Store
+    #[link_name = "store_get"]
+    pub(crate) fn store_get(ptr: u32, size: u32) -> u64;
+
+    #[link_name = "store_set"]
+    pub(crate) fn store_set(ptr: u32, size: u32) -> u64;
+
+    #[link_name = "store_delete"]
+    pub(crate) fn store_delete(ptr: u32, size: u32) -> u64;
+
+    #[link_name = "store_all"]
+    pub(crate) fn store_all(ptr: u32, size: u32) -> u64;
+
+    #[link_name = "store_clear"]
+    pub(crate) fn store_clear(ptr: u32, size: u32) -> u64;
 }

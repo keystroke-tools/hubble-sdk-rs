@@ -44,6 +44,9 @@ pub fn set(key: &str, value: &str) -> Result<String, Error> {
         });
     }
 
+    // Write the message to memory
+    allocator::write_to_memory(ptr, &message);
+
     let encoded_ptr = unsafe { host::store_set(ptr, size) };
     let (out_ptr, out_size) = allocator::decode_encoded_ptr(encoded_ptr);
     if out_ptr == 0 || out_size == 0 {

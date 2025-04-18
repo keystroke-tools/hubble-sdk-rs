@@ -34,10 +34,14 @@ pub extern "C" fn deallocate(ptr: u32, size: u32) {
 /// ## Safety
 /// This function is unsafe because it dereferences a pointer and assumes
 /// the memory is valid and contains a UTF-8 string.
+///
+/// NOTE: This function deallocates the memory at the given pointer after
+/// reading the string.
 pub unsafe fn ptr_to_string(ptr: u32, len: u32) -> String {
     let slice = unsafe { std::slice::from_raw_parts_mut(ptr as *mut u8, len as usize) };
-    let utf8 = unsafe { std::str::from_utf8_unchecked_mut(slice) };
-    utf8.to_owned()
+    let str = unsafe { std::str::from_utf8_unchecked_mut(slice) }.to_owned();
+    deallocate(ptr, len);
+    str
 }
 
 /// Returns a pointer and size pair for the given string.

@@ -32,13 +32,6 @@ pub fn generate_checksum(data: &[u8]) -> String {
     format!("{:x}", result)
 }
 
-/// Writes an error string to the host environment.
-pub fn write_error(err: crate::error::Error) -> u64 {
-    let msg = err.to_string();
-    let (ptr, size) = unsafe { allocator::string_to_ptr(msg.as_str()) };
-    allocator::encode_ptr_with_size(ptr, size)
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -1,5 +1,7 @@
 use thiserror::Error;
 
+use crate::allocator;
+
 #[derive(Debug, Error)]
 pub enum Error {
     #[error("Failed to read/parse Cap'n Proto message: {0}")]
@@ -46,4 +48,12 @@ pub enum StoreError {
 
     #[error("Failed to delete key: {key}, reason: {reason}")]
     FailedDelete { key: String, reason: String },
+}
+
+impl Error {
+    /// Writes an error string to a shared memory space and returns an encoded pointer.
+    pub fn write_to_host(&self) -> u64 {
+        let (ptr, size) = unsafe { allocator::string_to_ptr(self.to_string().as_str()) };
+        allocator::encode_ptr_with_size(ptr, size)
+    }
 }

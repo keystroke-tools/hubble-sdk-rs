@@ -4,6 +4,7 @@ pub mod error;
 pub(crate) mod host;
 pub mod log;
 pub mod macros;
+pub(crate) mod markdown;
 pub mod network;
 pub mod store;
 pub mod transform;

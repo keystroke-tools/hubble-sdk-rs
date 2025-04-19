@@ -190,8 +190,8 @@ impl Entry {
 }
 
 pub struct Content {
-    markdown: String,
-    plain_text: String,
+    pub markdown: String,
+    pub plain_text: String,
 }
 
 pub struct UpdateEntryOpts {

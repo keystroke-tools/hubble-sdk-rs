@@ -1,4 +1,8 @@
-use crate::{allocator, error::Error, host, read_chunk_result};
+use crate::{
+    allocator,
+    error::{self, Error},
+    host, read_chunk_result, types,
+};
 
 /// Chunks the input string into smaller pieces with overlap (to retain context).
 /// This is useful for tasks like summarization or question answering.
@@ -60,4 +64,19 @@ pub fn html_to_markdown(html: &str) -> Result<String, Error> {
     }
 
     Ok(output)
+}
+
+/// Generates an content type from the given markdown string.
+/// It strips the markdown formatting and returns a new content type with the plain text included.
+pub fn md_to_content(markdown: &str) -> Result<types::Content, error::Error> {
+    if markdown.is_empty() {
+        return Err(Error::EmptyString);
+    }
+
+    let plain_text = crate::markdown::to_plain_text(markdown);
+
+    Ok(types::Content {
+        markdown: markdown.to_string(),
+        plain_text,
+    })
 }

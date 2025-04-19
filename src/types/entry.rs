@@ -61,7 +61,8 @@ pub struct Queue {
 pub struct Entry {
     pub id: String,
     pub name: String,
-    pub content: String,
+    pub markdown: String,
+    pub plain_text: String,
     pub version: i32,
     pub r#type: Type,
     pub collection: Collection,
@@ -150,7 +151,8 @@ impl From<entry_capnp::entry::Reader<'_>> for Entry {
     fn from(value: entry_capnp::entry::Reader<'_>) -> Self {
         let id = capnp_get_text!(value.get_id());
         let name = capnp_get_text!(value.get_name());
-        let content = capnp_get_text!(value.get_content());
+        let markdown = capnp_get_text!(value.get_markdown());
+        let plain_text = capnp_get_text!(value.get_plain_text());
         let version = value.get_version();
         let _type = value.get_type().unwrap_or(entry_capnp::Type::Other);
         let url = capnp_get_text!(value.get_url());
@@ -166,7 +168,8 @@ impl From<entry_capnp::entry::Reader<'_>> for Entry {
         Entry {
             id,
             name,
-            content,
+            markdown,
+            plain_text,
             version,
             r#type: _type.into(),
             collection,
@@ -186,10 +189,15 @@ impl Entry {
     }
 }
 
+pub struct Content {
+    markdown: String,
+    plain_text: String,
+}
+
 pub struct UpdateEntryOpts {
     pub id: String,
     pub name: Option<String>,
-    pub content: Option<String>,
+    pub content: Option<Content>,
     pub checksum: Option<String>,
 }
 
@@ -205,7 +213,8 @@ impl UpdateEntryOpts {
         }
 
         if let Some(content) = &self.content {
-            entry.set_content(content);
+            entry.set_plain_text_content(content.plain_text.to_owned());
+            entry.set_markdown_content(content.markdown.to_owned());
         }
 
         if let Some(checksum) = &self.checksum {

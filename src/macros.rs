@@ -1,4 +1,20 @@
 #[macro_export]
+macro_rules! safe_alloc {
+    ($ctx:expr, $size:expr) => {{
+        use $crate::allocator;
+
+        let ptr = allocator::allocate($size);
+        if ptr == 0 {
+            return Err(Error::MemoryAllocationFailed {
+                context: $ctx.to_string(),
+            });
+        }
+
+        ptr
+    }};
+}
+
+#[macro_export]
 macro_rules! capnp_str {
     ($expr:expr) => {
         $expr

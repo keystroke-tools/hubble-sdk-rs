@@ -1,18 +1,13 @@
 use crate::error::Error;
-use crate::types;
 use crate::{allocator, host};
+use crate::{safe_alloc, types};
 
 /// Sends a network request to the specified URL with the given method and body.
 pub fn request(opts: types::RequestOpts) -> Result<types::NetworkResponse, Error> {
     let message = opts.to_capnp_message()?;
 
     let size = message.len() as u32;
-    let ptr = allocator::allocate(size);
-    if ptr == 0 {
-        return Err(Error::MemoryAllocationFailed {
-            context: "write_request_data".to_string(),
-        });
-    }
+    let ptr = safe_alloc!("write_request_data", size);
 
     // Write the message to memory
     allocator::write_to_memory(ptr, &message);

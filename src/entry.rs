@@ -1,7 +1,7 @@
 use crate::{
     allocator,
     error::{self, Error},
-    host, types,
+    host, safe_alloc, types,
 };
 
 /// Update an entry in the data store.
@@ -14,12 +14,7 @@ pub fn update(opts: types::UpdateEntryOpts) -> Result<(), error::Error> {
 
     let message = opts.to_capnp_message()?;
     let size = message.len() as u32;
-    let ptr = allocator::allocate(size);
-    if ptr == 0 {
-        return Err(error::Error::MemoryAllocationFailed {
-            context: "update_chunk".to_string(),
-        });
-    }
+    let ptr = safe_alloc!("update_chunk", size);
 
     // Write message to shared memory
     allocator::write_to_memory(ptr, &message);
@@ -36,12 +31,7 @@ pub fn create_chunks(opts: types::CreateChunksOpts) -> Result<u64, error::Error>
     let message = opts.to_capnp_message()?;
 
     let size = message.len() as u32;
-    let ptr = allocator::allocate(size);
-    if ptr == 0 {
-        return Err(Error::MemoryAllocationFailed {
-            context: "create_chunks".to_string(),
-        });
-    }
+    let ptr = safe_alloc!("create_chunks", size);
     allocator::write_to_memory(ptr, &message);
 
     let count = unsafe { host::entry_create_chunks(ptr, size) };

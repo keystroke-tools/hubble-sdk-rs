@@ -31,6 +31,9 @@ pub enum Error {
     #[error("Failed to allocate memory in {context}")]
     MemoryAllocationFailed { context: String },
 
+    #[error("Failed to decode pointer in {context}")]
+    BadEncodedPointer { context: String },
+
     #[error("Invalid arguments provided: {0}")]
     InvalidArguments(String),
 

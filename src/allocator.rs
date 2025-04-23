@@ -1,5 +1,7 @@
 use std::alloc::{Layout, alloc, dealloc};
 
+use crate::error::Error;
+
 /// Allocates size bytes and leaks the pointer where they start.
 #[unsafe(no_mangle)]
 pub extern "C" fn allocate(size: u32) -> u32 {
@@ -62,10 +64,17 @@ pub fn write_to_memory(ptr: u32, data: &[u8]) {
 
 /// Reads a pointer and length from an encoded u64 value.
 /// Format: the upper 32 bits represent the pointer, and the lower 32 bits represent the length
-pub fn decode_encoded_ptr(encoded: u64) -> (u32, u32) {
+pub fn decode_encoded_ptr(ctx: &str, encoded: u64) -> Result<(u32, u32), Error> {
     let ptr = (encoded >> 32) as u32;
     let len = (encoded & 0xFFFFFFFF) as u32;
-    (ptr, len)
+
+    if ptr == 0 || len == 0 {
+        return Err(Error::BadEncodedPointer {
+            context: ctx.to_string(),
+        });
+    }
+
+    Ok((ptr, len))
 }
 
 /// Encodes a pointer and size into a u64 value.
@@ -82,8 +91,11 @@ mod tests {
         let ptr = 0xABCD1234;
         let len = 1024;
         let packed = ((ptr as u64) << 32) | (len as u64);
-        let (decoded_ptr, decoded_len) = decode_encoded_ptr(packed);
-        assert_eq!(ptr, decoded_ptr);
-        assert_eq!(len, decoded_len);
+        if let Ok((decoded_ptr, decoded_len)) = decode_encoded_ptr("test", packed) {
+            assert_eq!(ptr, decoded_ptr);
+            assert_eq!(len, decoded_len);
+        } else {
+            panic!("Failed to decode pointer and length");
+        }
     }
 }

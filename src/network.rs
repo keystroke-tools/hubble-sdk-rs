@@ -18,12 +18,7 @@ pub fn request(opts: types::RequestOpts) -> Result<types::NetworkResponse, Error
     allocator::write_to_memory(ptr, &message);
 
     let encoded_ptr = unsafe { host::network_request(ptr, size) };
-    let (out_ptr, out_size) = allocator::decode_encoded_ptr(encoded_ptr);
-    if out_ptr == 0 || out_size == 0 {
-        return Err(Error::MemoryAllocationFailed {
-            context: "read_request_data".to_string(),
-        });
-    }
+    let (out_ptr, out_size) = allocator::decode_encoded_ptr("request", encoded_ptr)?;
 
     // Read the response from memory
     types::NetworkResponse::read_from_memory(out_ptr, out_size)

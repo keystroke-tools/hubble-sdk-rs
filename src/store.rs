@@ -14,10 +14,8 @@ pub(crate) const DELETE_ERR_PREFIX: &str = "ERR("; // Errors in the delete opera
 pub fn get(key: &str) -> Result<String, Error> {
     let (ptr, size) = unsafe { allocator::string_to_ptr(key) };
     let encoded_ptr = unsafe { host::store_get(ptr, size) };
-    let (out_ptr, out_size) = allocator::decode_encoded_ptr(encoded_ptr);
-    if out_ptr == 0 || out_size == 0 {
-        return Err(Error::StoreError(StoreError::UnexpectedResult));
-    }
+    let (out_ptr, out_size) = allocator::decode_encoded_ptr("store_get", encoded_ptr)
+        .map_err(|_| Error::StoreError(StoreError::UnexpectedResult))?;
 
     let output = unsafe { allocator::ptr_to_string(out_ptr, out_size) };
     if output == NOT_FOUND_VALUE {
@@ -48,12 +46,7 @@ pub fn set(key: &str, value: &str) -> Result<String, Error> {
     allocator::write_to_memory(ptr, &message);
 
     let encoded_ptr = unsafe { host::store_set(ptr, size) };
-    let (out_ptr, out_size) = allocator::decode_encoded_ptr(encoded_ptr);
-    if out_ptr == 0 || out_size == 0 {
-        return Err(Error::MemoryAllocationFailed {
-            context: "store_set".to_string(),
-        });
-    }
+    let (out_ptr, out_size) = allocator::decode_encoded_ptr("store_set", encoded_ptr)?;
 
     let output = unsafe { allocator::ptr_to_string(out_ptr, out_size) };
     Ok(output)
@@ -63,12 +56,7 @@ pub fn set(key: &str, value: &str) -> Result<String, Error> {
 pub fn delete(key: &str) -> Result<(), Error> {
     let (ptr, size) = unsafe { allocator::string_to_ptr(key) };
     let encoded_ptr = unsafe { host::store_delete(ptr, size) };
-    let (out_ptr, out_size) = allocator::decode_encoded_ptr(encoded_ptr);
-    if out_ptr == 0 || out_size == 0 {
-        return Err(Error::MemoryAllocationFailed {
-            context: "store_delete".to_string(),
-        });
-    }
+    let (out_ptr, out_size) = allocator::decode_encoded_ptr("store_delete", encoded_ptr)?;
 
     let output = unsafe { allocator::ptr_to_string(out_ptr, out_size) };
     match output.as_str() {
@@ -94,10 +82,8 @@ pub fn delete(key: &str) -> Result<(), Error> {
 /// There is no strict ordering guaranteed for the pairs in the result.
 pub fn all() -> Result<Vec<(String, String)>, Error> {
     let encoded_ptr = unsafe { host::store_all(0, 0) };
-    let (out_ptr, out_size) = allocator::decode_encoded_ptr(encoded_ptr);
-    if out_ptr == 0 || out_size == 0 {
-        return Err(Error::StoreError(StoreError::UnexpectedResult));
-    }
+    let (out_ptr, out_size) = allocator::decode_encoded_ptr("store_all", encoded_ptr)
+        .map_err(|_| Error::StoreError(StoreError::UnexpectedResult))?;
 
     let output = crate::capnp_message_to_type!(
         out_ptr,

@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use crate::capnp_get_text;
 use crate::entry_capnp;
 use crate::error;
@@ -24,6 +26,30 @@ pub enum Type {
 
     #[default]
     Other,
+}
+
+impl Display for Type {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Type::Link => f.write_str("Link"),
+            Type::Audio => f.write_str("Audio"),
+            Type::Video => f.write_str("Video"),
+            Type::Image => f.write_str("Image"),
+            Type::PDF => f.write_str("PDF"),
+            Type::Interchange => f.write_str("Interchange"),
+            Type::EPUB => f.write_str("EPUB"),
+            Type::WordDocument => f.write_str("Word Document"),
+            Type::Presentation => f.write_str("Presentation"),
+            Type::Spreadsheet => f.write_str("Spreadsheet"),
+            Type::HTML => f.write_str("HTML"),
+            Type::Markdown => f.write_str("Markdown"),
+            Type::PlainText => f.write_str("Plain Text"),
+            Type::Archive => f.write_str("Archive"),
+            Type::Code => f.write_str("Code"),
+            Type::Comment => f.write_str("Comment"),
+            Type::Other => f.write_str("Other"),
+        }
+    }
 }
 
 #[derive(Default)]

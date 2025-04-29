@@ -2,6 +2,7 @@ pub mod allocator;
 pub mod entry;
 pub mod error;
 pub(crate) mod host;
+pub mod language;
 pub mod log;
 pub mod macros;
 pub(crate) mod markdown;
@@ -10,15 +11,15 @@ pub mod store;
 pub mod transform;
 pub mod types;
 
-pub mod entry_capnp {
+pub(crate) mod entry_capnp {
     include!(concat!(env!("OUT_DIR"), "/entry_capnp.rs"));
 }
 
-pub mod store_capnp {
+pub(crate) mod store_capnp {
     include!(concat!(env!("OUT_DIR"), "/store_capnp.rs"));
 }
 
-pub mod network_capnp {
+pub(crate) mod network_capnp {
     include!(concat!(env!("OUT_DIR"), "/network_capnp.rs"));
 }
 

@@ -39,6 +39,9 @@ pub enum Error {
 
     #[error("{0}")]
     StoreError(StoreError),
+
+    #[error("Invalid rand value size: {expected} bytes, got {actual} bytes")]
+    BadRandomSize { expected: u32, actual: u32 },
 }
 
 #[derive(Debug, Error)]

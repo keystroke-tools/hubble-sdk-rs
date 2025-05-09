@@ -46,11 +46,23 @@ pub unsafe fn ptr_to_string(ptr: u32, len: u32) -> String {
     str
 }
 
+/// Returns a buffer from a pointer and length.
+///
+/// ## Safety
+/// This function is unsafe because it dereferences a pointer and assumes
+pub unsafe fn ptr_to_buffer(ptr: u32, len: u32) -> Vec<u8> {
+    let slice = unsafe { std::slice::from_raw_parts_mut(ptr as *mut u8, len as usize) };
+    let buf = slice.to_vec();
+    deallocate(ptr, len);
+    buf
+}
+
 /// Returns a pointer and size pair for the given string.
 ///
 /// ## Safety
 /// This function is unsafe because it returns a pointer to the string's
 /// internal buffer, which may not be valid if the string is dropped or
+/// reallocated.
 pub unsafe fn string_to_ptr(s: &str) -> (u32, u32) {
     (s.as_ptr() as u32, s.len() as u32)
 }

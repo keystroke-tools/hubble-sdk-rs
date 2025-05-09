@@ -45,4 +45,8 @@ unsafe extern "C" {
 
     #[link_name = "store_clear"]
     pub(crate) fn store_clear(ptr: u32, size: u32) -> u64;
+
+    // Crypto
+    #[link_name = "crypto_rand"]
+    pub(crate) fn crypto_rand(ptr: u32, size: u32) -> u64;
 }

@@ -1,4 +1,5 @@
 pub mod allocator;
+pub mod crypto;
 pub mod entry;
 pub mod error;
 pub(crate) mod host;

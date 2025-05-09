@@ -11,6 +11,8 @@ pub enum RandSize {
     Medium,
     /// 64 bytes
     Large,
+    /// Custom size
+    Custom(u32),
 }
 
 impl From<RandSize> for u32 {
@@ -19,6 +21,7 @@ impl From<RandSize> for u32 {
             RandSize::Small => 16,
             RandSize::Medium => 32,
             RandSize::Large => 64,
+            RandSize::Custom(size) => size,
         }
     }
 }
@@ -29,6 +32,7 @@ impl Display for RandSize {
             RandSize::Small => "Small",
             RandSize::Medium => "Medium",
             RandSize::Large => "Large",
+            RandSize::Custom(size) => &format!("Custom({})", size),
         };
         write!(f, "{}", size_str)
     }
